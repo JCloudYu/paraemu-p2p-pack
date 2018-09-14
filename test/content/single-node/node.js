@@ -24,6 +24,7 @@
             // stop set interval
             clearInterval(intervalId);
             
+            console.log('* [Single-Node] Node disconnect');
             process.exit(0);
         }
     }, 500);
