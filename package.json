@@ -1,0 +1,22 @@
+{
+    "name": "paraemu-p2p-pack",
+    "version": "0.1.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test-central": "paraemu ./test/config-central.json",
+        "test-multi-node": "paraemu ./test/config-multi-node.json",
+        "test-single-node": "paraemu ./test/config-single-node.json",
+        "test-central-inspect": "paraemu --inspect-brk=1234 ./test/inspect/config-central.json",
+        "test-multi-node-inspect": "paraemu --inspect-brk=1234 ./test/inspect/config-multi-node.json",
+        "test-single-node-inspect": "paraemu --inspect-brk=1234 ./test/inspect/config-single-node.json"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "tiinytiny": "^0.2.7"
+    },
+    "devDependencies": {
+        "mongodb": "^3.1.4"
+    }
+}

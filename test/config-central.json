@@ -1,0 +1,12 @@
+{
+    "server": {
+		"host": "127.0.0.1",
+		"port": 23410
+	},
+    "processes" : [
+        {
+            "root": "./content/central/",
+            "script": "./central.js"
+        }
+    ]
+}

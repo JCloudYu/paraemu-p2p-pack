@@ -1,0 +1,33 @@
+{
+    "remote": {
+		"host": "127.0.0.1",
+		"port": 23410
+	},
+    "processes" : [
+        {
+            "root": "../content/multi-node/",
+            "script": "./node.js",
+            "env": ["--inspect-brk"]
+        },
+        {
+            "root": "../content/multi-node/",
+            "script": "./node.js",
+            "env": ["--inspect-brk"]
+        },
+        {
+            "root": "../content/multi-node/",
+            "script": "./node.js",
+            "env": ["--inspect-brk"]
+        },
+        {
+            "root": "../content/multi-node/",
+            "script": "./node.js",
+            "env": ["--inspect-brk"]
+        },
+        {
+            "root": "../content/multi-node/",
+            "script": "./node.js",
+            "env": ["--inspect-brk"]
+        }
+    ]
+}
