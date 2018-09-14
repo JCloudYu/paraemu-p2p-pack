@@ -14,17 +14,11 @@
         .on('tasks-ready', (e) => {
             if (isInit) return;
 
-            pemu.local('central-identification');
+            pemu.local('__p2p-central-identification');
             isInit = true;
         })
         .on('net-group-attach', (e) => {
-            pemu.send(e.sender, 'central-identification');
-        })
-        .on('node-connect', async (e) => {
-            // get neighbors and response
-            let neighbors = await Object.callMethod(pemu, 'nodeConnect', e.sender);
-            e.respondWith(neighbors);
-            corePrepared();
+            pemu.send(e.sender, '__p2p-central-identification');
         })
         .on('net-group-detach', async (e) => {
             let nodeIds = await Object.callMethod(pemu, 'nodeGroupDetach', e.sender);
@@ -33,10 +27,16 @@
             }
 
             for (let nodeId of nodeIds) {
-                pemu.send(pemu.uniqueId, 'node-disconnect', nodeId);
+                pemu.send(pemu.uniqueId, '__p2p-node-disconnect', nodeId);
             }
         })
-        .on('node-disconnect', (e, ...args) => {
+        .on('__p2p-node-connect', async (e) => {
+            // get neighbors and response
+            let neighbors = await Object.callMethod(pemu, 'nodeConnect', e.sender);
+            e.respondWith(neighbors);
+            corePrepared();
+        })
+        .on('__p2p-node-disconnect', (e, ...args) => {
             Object.callMethod(pemu, 'nodeDisconnect', ...args);
         });
 

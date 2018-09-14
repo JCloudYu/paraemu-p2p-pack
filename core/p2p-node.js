@@ -21,19 +21,19 @@
 
             isInit = true;
         })
-        .on('central-identification', async (e) => {
+        .on('__p2p-central-identification', async (e) => {
             if (centralId) return;
 
             centralId = e.sender;
             try {
-                pemu.wiredNeighbors = await pemu.deliver(centralId, 'node-connect');
+                pemu.wiredNeighbors = await pemu.deliver(centralId, '__p2p-node-connect');
                 corePrepared();
             }
             catch (e) {
                 console.log(e);
             }
         })
-        .on('node-find-peer', (e, nodeId) => {
+        .on('__p2p-node-find-peer', (e, nodeId) => {
             if ((!pemu.maxPeers) || (pemu.peers.length >= pemu.maxPeers)) {
                 e.respondWith(null);
                 return;
@@ -64,7 +64,7 @@
             findPeer: async () => {
                 const promises = [];
                 for (let nodeId of pemu.wiredNeighbors) {
-                    let promise = pemu.deliver(nodeId, 'node-find-peer', pemu.uniqueId);
+                    let promise = pemu.deliver(nodeId, '__p2p-node-find-peer', pemu.uniqueId);
                     promises.push(promise);
                 }
 
@@ -77,7 +77,7 @@
                 });
             },
             disconnect: async () => {
-                pemu.send(centralId, 'node-disconnect', pemu.uniqueId);
+                pemu.send(centralId, '__p2p-node-disconnect', pemu.uniqueId);
             }
         };
 
