@@ -1,0 +1,39 @@
+{
+    "processes" : [
+        {
+            "root": "../content/central/",
+            "script": "./central.js",
+            "env": ["--inspect-brk"]
+        },
+        {
+            "root": "../content/multi-node/",
+            "script": "./node.js",
+            "env": ["--inspect-brk"]
+        },
+        {
+            "root": "../content/multi-node/",
+            "script": "./node.js",
+            "env": ["--inspect-brk"]
+        },
+        {
+            "root": "../content/multi-node/",
+            "script": "./node.js",
+            "env": ["--inspect-brk"]
+        },
+        {
+            "root": "../content/multi-node/",
+            "script": "./node.js",
+            "env": ["--inspect-brk"]
+        },
+        {
+            "root": "../content/multi-node/",
+            "script": "./node.js",
+            "env": ["--inspect-brk"]
+        },
+        {
+            "root": "../content/single-node/",
+            "script": "./node.js",
+            "env": ["--inspect-brk"]
+        }
+    ]
+}

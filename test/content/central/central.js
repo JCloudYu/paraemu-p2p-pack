@@ -1,5 +1,3 @@
-
-
 (async () => {
     'use strict';
 
@@ -110,7 +108,7 @@
             
             console.log('* [Central] Central init');
         });
-    })
+    });
 
     function __getRandom(minNum, maxNum) {
         return Math.floor( Math.random() * (maxNum - minNum + 1) ) + minNum;

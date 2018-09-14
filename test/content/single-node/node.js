@@ -10,7 +10,7 @@
 
     // check neighbor is more than zero
     let intervalId = setInterval(async() => {
-        if (pemu.wiredNeighbors.length > 0) {
+        if (pemu.wiredNeighbors && pemu.wiredNeighbors.length > 0) {
             // node find peer
             await pemu.findPeer();
             console.log('* [Single-Node] Neighbors:');

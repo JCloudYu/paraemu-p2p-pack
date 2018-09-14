@@ -1,0 +1,32 @@
+{
+    "processes" : [
+        {
+            "root": "./content/central/",
+            "script": "./central.js"
+        },
+        {
+            "root": "./content/multi-node/",
+            "script": "./node.js"
+        },
+        {
+            "root": "./content/multi-node/",
+            "script": "./node.js"
+        },
+        {
+            "root": "./content/multi-node/",
+            "script": "./node.js"
+        },
+        {
+            "root": "./content/multi-node/",
+            "script": "./node.js"
+        },
+        {
+            "root": "./content/multi-node/",
+            "script": "./node.js"
+        },
+        {
+            "root": "./content/single-node/",
+            "script": "./node.js"
+        }
+    ]
+}
