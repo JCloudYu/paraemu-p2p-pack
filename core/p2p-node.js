@@ -21,15 +21,13 @@
 
             isInit = true;
         })
-        .on('net-connection-ready', (e) => {
-            corePrepared();
-        })
         .on('central-identification', async (e) => {
             if (centralId) return;
 
             centralId = e.sender;
             try {
                 pemu.wiredNeighbors = await pemu.deliver(centralId, 'node-connect');
+                corePrepared();
             }
             catch (e) {
                 console.log(e);

@@ -7,27 +7,7 @@
     require('../../../index').expand('central', pemu);
     const { MongoClient } = require('mongodb');
 
-    const dbUrl = 'mongodb://127.0.0.1:27017/';
-    const dbName = 'p2p-central';
-    const colName = 'node';
-
-    let collection = null;
-    await pemu.init(() => {
-        return new Promise(async (resolve) => {
-            // Init mongodb
-            const connect = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
-            resolve(connect.db(dbName));
-        })
-        .then((db) => {
-            collection = db.collection(colName);
-            
-            // clean old data
-            collection.deleteMany({});
-            
-            console.log('* [Central] Central init');
-        });
-    })
-
+    // node connect logic in config
     pemu.nodeConnect = async (nodeId) => {
         if (!nodeId || !collection) return;
 
@@ -70,6 +50,7 @@
         return neighborNodeIds;
     };
 
+    // node disconnect logic in config
     pemu.nodeDisconnect = async (nodeId) => {
         if (!nodeId || !collection) return;
 
@@ -92,6 +73,7 @@
         console.log(`* Node disconnect: ${nodeId}`);
     };
 
+    // node group detach logic in config
     pemu.nodeGroupDetach = async (groupId) => {
         if (!groupId || !collection) return;
 
@@ -108,6 +90,27 @@
 
         return nodeIds;
     };
+
+    const dbUrl = 'mongodb://127.0.0.1:27017/';
+    const dbName = 'p2p-central';
+    const colName = 'node';
+
+    let collection = null;
+    await pemu.init(() => {
+        return new Promise(async (resolve) => {
+            // init mongodb
+            const connect = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
+            resolve(connect.db(dbName));
+        })
+        .then((db) => {
+            collection = db.collection(colName);
+            
+            // clean old data
+            collection.deleteMany({});
+            
+            console.log('* [Central] Central init');
+        });
+    })
 
     function __getRandom(minNum, maxNum) {
         return Math.floor( Math.random() * (maxNum - minNum + 1) ) + minNum;

@@ -14,11 +14,8 @@
         .on('tasks-ready', (e) => {
             if (isInit) return;
 
-            isInit = true;
             pemu.local('central-identification');
-        })
-        .on('net-connection-ready', (e) => {
-            corePrepared();
+            isInit = true;
         })
         .on('net-group-attach', (e) => {
             pemu.send(e.sender, 'central-identification');
@@ -27,6 +24,7 @@
             // get neighbors and response
             let neighbors = await Object.callMethod(pemu, 'nodeConnect', e.sender);
             e.respondWith(neighbors);
+            corePrepared();
         })
         .on('net-group-detach', async (e) => {
             let nodeIds = await Object.callMethod(pemu, 'nodeGroupDetach', e.sender);
