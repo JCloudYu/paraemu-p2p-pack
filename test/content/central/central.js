@@ -112,13 +112,4 @@
     function __getRandom(minNum, maxNum) {
         return Math.floor( Math.random() * (maxNum - minNum + 1) ) + minNum;
     }
-    // pemu.calcRelation = (nodeId) => {
-    //     console.log(`NodeId: ${nodeId}`);
-    // };
-
-    // pemu.on( 'endpoint-init-requested', (e) => {
-    //     let relation = [];
-    //     // Calc node relation....
-    //     e.respondWith(relation);
-    // });
 })();
