@@ -5,7 +5,11 @@
     require('../../../index').expand('central', pemu);
     const { MongoClient } = require('mongodb');
 
-    // node connect logic in config
+    /*
+    * Node connect logic
+    * @param {string} nodeId
+    * @return {string[]} neighborNodeIds
+    */
     pemu.nodeConnect = async (nodeId) => {
         if (!nodeId || !collection) return;
 
@@ -48,7 +52,10 @@
         return neighborNodeIds;
     };
 
-    // node disconnect logic in config
+    /*
+    * Node disconnect logic
+    * @param {string} nodeId
+    */
     pemu.nodeDisconnect = async (nodeId) => {
         if (!nodeId || !collection) return;
 
@@ -71,7 +78,11 @@
         console.log(`* Node disconnect: ${nodeId}`);
     };
 
-    // node group detach logic in config
+    /*
+    * Node group detach logic
+    * @param {string} groupId
+    * @return {string[]} nodeIds
+    */
     pemu.nodeGroupDetach = async (groupId) => {
         if (!groupId || !collection) return;
 
@@ -105,10 +116,9 @@
             
             // clean old data
             collection.deleteMany({});
-            
-            console.log('* [Central] Central init');
         });
     });
+    console.log('* [Central] Central init');
 
     function __getRandom(minNum, maxNum) {
         return Math.floor( Math.random() * (maxNum - minNum + 1) ) + minNum;

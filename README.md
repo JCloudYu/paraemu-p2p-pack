@@ -77,19 +77,35 @@
     const pemu = require('paraemu');
     require('paraemu-p2p-pack').expand('central', pemu);
 
-    pemu.nodeConnect = () => {
-        ...                             // node connect logic
+    /*
+    * Node connect logic
+    * @param {string} nodeId
+    * @return {string[]} neighborNodeIds
+    */
+    pemu.nodeConnect = (nodeId) => {
+        ...
+        return neighborNodeIds;
     };
 
-    pemu.nodeDisconnect = () => {
-        ...                             // node disconnect logic
+    /*
+    * Node disconnect logic
+    * @param {string} nodeId
+    */
+    pemu.nodeDisconnect = (nodeId) => {
+        ...
     };
 
-    pemu.nodeGroupDetach = () => {
-        ...                             // node group detch logic
+    /*
+    * Node group detach logic
+    * @param {string} groupId
+    * @return {string[]} nodeIds
+    */
+    pemu.nodeGroupDetach = (groupId) => {
+        ...
+        return nodeIds;
     };
 
-    await pemu.init(callback);          // init central
+    await pemu.init(callback1);         // init central
     ```
 
     (2) Node Example:
@@ -99,9 +115,18 @@
     require('paraemu-p2p-pack').expand('node', pemu);
 
     pemu.maxPeers = 5;                  // set maximum peers
-    await pemu.init();                  // init node
 
+    /*
+    * Node agree or disagree to become a peer (Optional)
+    * @return {boolean}
+    */
+    pemu.agreeBecomePeer = () => {
+        ...
+    };
+
+    await pemu.init(callback2);         // init node
     console.log(pemu.wiredNeighbors);   // list of wired neighbors
+
     await pemu.findPeer();              // find peers by wired neighbors
     await pemu.disconnect();            // disconnect
     ```
