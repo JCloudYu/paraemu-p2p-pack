@@ -5,21 +5,29 @@
     const tiiny = require('tiinytiny');
 
     module.exports = (pemu) => {
-        
+
         let isInit = false;
         let centralId = null;
+        let corePrepared;
+        const corePromise = new Promise((resolve) => { corePrepared = resolve } );
+        let defaultOptions = {
+            maxPeers: 1,
+
+            agreeBecomePeer: function() {
+                return (this.maxPeers > 0) && (pemu.peers.length < this.maxPeers);
+            }
+        }
+        let config = {};
 
         let __wiredNeighbors = [];
         let __peers = [];
 
-        let corePrepared;
-        const corePromise = new Promise((resolve) => { corePrepared = resolve } );
-
         pemu
         .on('tasks-ready', () => {
             if (isInit) return;
-
+            
             isInit = true;
+            config = Object.assign(config, defaultOptions, pemu);
         })
         .on('__p2p-central-identification', async (e) => {
             if (centralId) return;
@@ -34,13 +42,14 @@
             }
         })
         .on('__p2p-node-find-peer', (e, nodeId) => {
-            if ((!pemu.maxPeers) || (pemu.peers.length >= pemu.maxPeers)) {
-                e.respondWith(null);
+            let agree = Object.callMethod(config, 'agreeBecomePeer');
+            if (agree === true) {
+                pemu.peers.push(nodeId);
+                e.respondWith(pemu.uniqueId);
                 return;
             }
 
-            e.respondWith(pemu.uniqueId);
-            pemu.peers.push(nodeId);
+            e.respondWith(null);
         });
 
         let module = {
@@ -58,8 +67,12 @@
                 __peers = value;
             },
 
-            init: () => {
-                return corePromise;
+            init: (cb) => {
+                if (typeof cb !== 'function') {
+                    return corePromise;
+                }
+
+                return Promise.all([Promise.resolve(cb()), corePromise]);
             },
             findPeer: async () => {
                 const promises = [];
