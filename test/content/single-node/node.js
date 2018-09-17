@@ -6,10 +6,11 @@
     
     pemu.maxPeers = 5;
 
-    /*
-    * Node agree or disagree to become a peer
-    * @return {boolean}
-    */
+    /**
+     * Node agree or disagree to become a peer
+     * @function agreeBecomePeer
+     * @return {boolean}
+     */
     pemu.agreeBecomePeer = () => {
         if ((pemu.maxPeers > 0) && (pemu.peers.length < pemu.maxPeers)) {
             return true;
@@ -23,7 +24,7 @@
     });
 
     // check neighbor is more than zero
-    let intervalId = setInterval(async() => {
+    let intervalId = setInterval(async () => {
         if (pemu.wiredNeighbors && pemu.wiredNeighbors.length > 0) {
             // node find peer
             await pemu.findPeer();

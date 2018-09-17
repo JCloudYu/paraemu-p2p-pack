@@ -77,30 +77,37 @@
     const pemu = require('paraemu');
     require('paraemu-p2p-pack').expand('central', pemu);
 
-    /*
-    * Node connect logic
-    * @param {string} nodeId
-    * @return {string[]} neighborNodeIds
-    */
-    pemu.nodeConnect = (nodeId) => {
+    /**
+     * Node connect logic
+     * @async
+     * @function nodeConnect
+     * @param  {string} nodeId
+     * @return {Promise<string[]>} Neighbor node ids
+     */
+    pemu.nodeConnect = async (nodeId) => {
         ...
         return neighborNodeIds;
     };
 
-    /*
-    * Node disconnect logic
-    * @param {string} nodeId
-    */
-    pemu.nodeDisconnect = (nodeId) => {
+    /**
+     * Node disconnect logic
+     * @async
+     * @function nodeDisconnect
+     * @param  {string} nodeId
+     * @return {Promise<undefined>}
+     */
+    pemu.nodeDisconnect = async (nodeId) => {
         ...
     };
 
-    /*
-    * Node group detach logic
-    * @param {string} groupId
-    * @return {string[]} nodeIds
-    */
-    pemu.nodeGroupDetach = (groupId) => {
+    /**
+     * Node group detach logic
+     * @async
+     * @function nodeGroupDetach
+     * @param {string} groupId
+     * @return {Promise<string[]>} Node ids
+     */
+    pemu.nodeGroupDetach = async (groupId) => {
         ...
         return nodeIds;
     };
@@ -116,10 +123,11 @@
 
     pemu.maxPeers = 5;                  // set maximum peers
 
-    /*
-    * Node agree or disagree to become a peer (Optional)
-    * @return {boolean}
-    */
+    /**
+     * Node agree or disagree to become a peer
+     * @function agreeBecomePeer
+     * @return {boolean}
+     */
     pemu.agreeBecomePeer = () => {
         ...
     };

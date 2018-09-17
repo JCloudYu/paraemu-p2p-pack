@@ -25,9 +25,9 @@
         pemu
         .on('tasks-ready', () => {
             if (isInit) return;
-            
-            isInit = true;
+
             config = Object.assign(config, defaultOptions, pemu);
+            isInit = true;
         })
         .on('__p2p-central-identification', async (e) => {
             if (centralId) return;
