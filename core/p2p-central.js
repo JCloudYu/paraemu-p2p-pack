@@ -16,9 +16,11 @@
 
             pemu.local('__p2p-central-identification');
             isInit = true;
+            corePrepared();
         })
         .on('net-group-attach', (e) => {
             pemu.send(e.sender, '__p2p-central-identification');
+            corePrepared();
         })
         .on('net-group-detach', async (e) => {
             let nodeIds = await Object.callMethod(pemu, 'nodeGroupDetach', e.sender);
@@ -34,14 +36,19 @@
             // get neighbors and response
             let neighbors = await Object.callMethod(pemu, 'nodeConnect', e.sender);
             e.respondWith(neighbors);
-            corePrepared();
         })
         .on('__p2p-node-disconnect', (e, ...args) => {
             Object.callMethod(pemu, 'nodeDisconnect', ...args);
         });
 
-        module.init = (cb) => {
-            return Promise.all([Promise.resolve(cb()), corePromise]);
+        let module = {
+            init: (cb) => {
+                if (typeof cb !== 'function') {
+                    return corePromise;
+                }
+    
+                return Promise.all([Promise.resolve(cb()), corePromise]);
+            }
         };
 
         return module;
