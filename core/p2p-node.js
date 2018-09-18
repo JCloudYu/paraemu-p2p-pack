@@ -9,12 +9,12 @@
         let isInit = false;
         let centralId = null;
         let corePrepared;
-        const corePromise = new Promise((resolve) => { corePrepared = resolve } );
+        const corePromise = new Promise((resolve) => { corePrepared = resolve });
         let defaultOptions = {
             maxPeers: 1,
 
             agreeBecomePeer: function() {
-                return (this.maxPeers > 0) && (pemu.peers.length < this.maxPeers);
+                return ((this.maxPeers > 0) && (pemu.peers.length < this.maxPeers));
             }
         }
         let config = {};

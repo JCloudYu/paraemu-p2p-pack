@@ -81,7 +81,7 @@
      * Node connect logic
      * @async
      * @function nodeConnect
-     * @param  {string} nodeId
+     * @param {string} nodeId
      * @return {Promise<string[]>} Neighbor node ids
      */
     pemu.nodeConnect = async (nodeId) => {
@@ -93,7 +93,7 @@
      * Node disconnect logic
      * @async
      * @function nodeDisconnect
-     * @param  {string} nodeId
+     * @param {string} nodeId
      * @return {Promise<undefined>}
      */
     pemu.nodeDisconnect = async (nodeId) => {
@@ -124,7 +124,7 @@
     pemu.maxPeers = 5;                  // set maximum peers
 
     /**
-     * Node agree or disagree to become a peer
+     * Node agree or disagree to become a peer (Optional)
      * @function agreeBecomePeer
      * @return {boolean}
      */

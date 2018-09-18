@@ -7,7 +7,7 @@
     pemu.maxPeers = 5;
 
     /**
-     * Node agree or disagree to become a peer
+     * Node agree or disagree to become a peer (Optional)
      * @function agreeBecomePeer
      * @return {boolean}
      */

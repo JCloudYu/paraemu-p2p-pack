@@ -9,7 +9,7 @@
      * Node connect logic
      * @async
      * @function nodeConnect
-     * @param  {string} nodeId
+     * @param {string} nodeId
      * @return {Promise<string[]>} Neighbor node ids
      */
     pemu.nodeConnect = async (nodeId) => {
@@ -128,6 +128,6 @@
     console.log('* [Central] Central init');
 
     function __getRandom(minNum, maxNum) {
-        return Math.floor( Math.random() * (maxNum - minNum + 1) ) + minNum;
+        return Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
     }
 })();

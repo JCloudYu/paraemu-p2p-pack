@@ -6,12 +6,11 @@
     module.exports = (pemu) => {
 
         let isInit = false;
-
         let corePrepared;
-        const corePromise = new Promise((resolve) => { corePrepared = resolve } );
+        const corePromise = new Promise((resolve) => { corePrepared = resolve });
 
         pemu
-        .on('tasks-ready', (e) => {
+        .on('tasks-ready', () => {
             if (isInit) return;
 
             pemu.local('__p2p-central-identification');
