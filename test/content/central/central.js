@@ -8,7 +8,6 @@
     /**
      * Node connect logic
      * @async
-     * @function nodeConnect
      * @param {string} nodeId
      * @return {Promise<string[]>} Neighbor node ids
      */
@@ -57,7 +56,6 @@
     /**
      * Node disconnect logic
      * @async
-     * @function nodeDisconnect
      * @param {string} nodeId
      * @return {Promise<undefined>}
      */
@@ -86,7 +84,6 @@
     /**
      * Node group detach logic
      * @async
-     * @function nodeGroupDetach
      * @param {string} groupId
      * @return {Promise<string[]>} Node ids
      */

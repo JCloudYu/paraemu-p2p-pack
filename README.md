@@ -80,7 +80,6 @@
     /**
      * Node connect logic
      * @async
-     * @function nodeConnect
      * @param {string} nodeId
      * @return {Promise<string[]>} Neighbor node ids
      */
@@ -92,7 +91,6 @@
     /**
      * Node disconnect logic
      * @async
-     * @function nodeDisconnect
      * @param {string} nodeId
      * @return {Promise<undefined>}
      */
@@ -103,7 +101,6 @@
     /**
      * Node group detach logic
      * @async
-     * @function nodeGroupDetach
      * @param {string} groupId
      * @return {Promise<string[]>} Node ids
      */
@@ -125,7 +122,6 @@
 
     /**
      * Node agree or disagree to become a peer (Optional)
-     * @function agreeBecomePeer
      * @return {boolean}
      */
     pemu.agreeBecomePeer = () => {
@@ -136,6 +132,7 @@
     console.log(pemu.wiredNeighbors);   // list of wired neighbors
 
     await pemu.findPeer();              // find peers by wired neighbors
+    console.log(pemu.peers);            // list of peers
     await pemu.disconnect();            // disconnect
     ```
 
