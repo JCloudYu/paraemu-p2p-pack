@@ -122,7 +122,7 @@
 
     /**
      * Node agree or disagree to become a peer (Optional)
-     * @return {boolean}
+     * @return {boolean} true: agree, false: disagree
      */
     pemu.agreeBecomePeer = () => {
         ...
@@ -133,6 +133,7 @@
 
     await pemu.findPeer();              // find peers by wired neighbors
     console.log(pemu.peers);            // list of peers
+
     await pemu.disconnect();            // disconnect
     ```
 

@@ -8,7 +8,7 @@
 
     /**
      * Node agree or disagree to become a peer (Optional)
-     * @return {boolean}
+     * @return {boolean} true: agree, false: disagree
      */
     pemu.agreeBecomePeer = () => {
         if ((pemu.maxPeers > 0) && (pemu.peers.length < pemu.maxPeers)) {
