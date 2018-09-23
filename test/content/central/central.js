@@ -43,7 +43,7 @@
         });
 
         // update neighbors in old nodes
-        await collection
+        collection
         .updateMany(
             { _id: { $in: neighborObjectIds } },
             { $push: { neighbors: insertedId } }
