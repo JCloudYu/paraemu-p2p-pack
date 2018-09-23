@@ -38,7 +38,7 @@
             neighbors: neighborObjectIds,
             time: Math.round(new Date().getTime() / 1000)
         })
-        .then(data => {
+        .then((data) => {
             return data.insertedId;
         });
 
@@ -95,6 +95,33 @@
         await collection
         .find(
             { groupId },
+            { nodeId: true }
+        )
+        .forEach((data) => {
+            nodeIds.push(data.nodeId);
+        });
+
+        return nodeIds;
+    };
+
+    /**
+     * Fetch neighbors logic
+     * @async
+     * @param {string} nodeId
+     * @return {Promise<string[]>} Neighbor node ids
+     */
+    pemu.fetchNeighbors = async (nodeId) => {
+        if (!nodeId || !collection) return;
+
+        // find neighbors object id by node id
+        const nodeData = await collection.findOne({ nodeId });
+        const { neighbors: neighborObjectIds = [] } = nodeData;
+
+        // find neighbors nodes id
+        let nodeIds = [];
+        await collection
+        .find(
+            { _id: { $in: neighborObjectIds } },
             { nodeId: true }
         )
         .forEach((data) => {

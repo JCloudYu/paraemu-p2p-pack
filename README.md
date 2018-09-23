@@ -109,6 +109,17 @@
         return nodeIds;
     };
 
+    /**
+     * Fetch neighbors logic
+     * @async
+     * @param {string} nodeId
+     * @return {Promise<string[]>} Neighbor node ids
+     */
+    pemu.fetchNeighbors = async (nodeId) => {
+        ...
+        return nodeIds;
+    };
+
     await pemu.init(callback1);         // init central
     ```
 
@@ -130,6 +141,9 @@
     };
 
     await pemu.init(callback2);         // init node
+    console.log(pemu.wiredNeighbors);   // list of wired neighbors
+
+    await pemu.fetchNeighbors();        // fetch the newest wired neighbors
     console.log(pemu.wiredNeighbors);   // list of wired neighbors
 
     await pemu.findPeer();              // find peers by wired neighbors

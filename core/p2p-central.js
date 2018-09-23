@@ -32,12 +32,21 @@
             }
         })
         .on('__p2p-node-connect', async (e) => {
+            if (!e.respondWith) return;
+
             // get neighbors and response
             let neighbors = await Object.callMethod(pemu, 'nodeConnect', e.sender);
             e.respondWith(neighbors);
         })
         .on('__p2p-node-disconnect', (e, ...args) => {
             Object.callMethod(pemu, 'nodeDisconnect', ...args);
+        })
+        .on('__p2p-fetch-neighbors', async (e) => {
+            if (!e.respondWith) return;
+
+            // get neighbors and response
+            let neighbors = await Object.callMethod(pemu, 'fetchNeighbors', e.sender);
+            e.respondWith(neighbors);
         });
 
         let module = {

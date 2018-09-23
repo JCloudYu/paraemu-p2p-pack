@@ -10,6 +10,7 @@
         let centralId = null;
         let corePrepared;
         const corePromise = new Promise((resolve) => { corePrepared = resolve });
+
         let defaultOptions = {
             maxPeers: 3,
 
@@ -58,6 +59,8 @@
             }
         })
         .on('__p2p-node-find-peer', (e, nodeId) => {
+            if (!e.respondWith) return;
+
             let agree = Object.callMethod(config, 'agreeBecomePeer', nodeId);
             if (agree === true) {
                 pemu.peers.push(nodeId);
@@ -89,6 +92,14 @@
                 }
 
                 return Promise.all([Promise.resolve(cb()), corePromise]);
+            },
+            fetchNeighbors: async () => {
+                try {
+                    pemu.wiredNeighbors = await pemu.deliver(centralId, '__p2p-fetch-neighbors');
+                }
+                catch (e) {
+                    console.log(e);
+                }
             },
             findPeer: async () => {
                 const promises = [];
