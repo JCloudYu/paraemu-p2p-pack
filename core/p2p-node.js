@@ -52,10 +52,15 @@
             }
         })
         .on('__p2p-node-disconnect', (e, nodeId) => {
-            // clean peers cache
-            let idx = pemu.peers.indexOf(nodeId);
-            if (idx !== -1) {
-                pemu.peers.splice(idx, 1);
+            // update neighbors and peers cache
+            let neighborIdx = pemu.wiredNeighbors.indexOf(nodeId);
+            if (neighborIdx !== -1) {
+                pemu.wiredNeighbors.splice(neighborIdx, 1);
+            }
+
+            let peerIdx = pemu.peers.indexOf(nodeId);
+            if (peerIdx !== -1) {
+                pemu.peers.splice(peerIdx, 1);
             }
         })
         .on('__p2p-node-find-peer', (e, nodeId) => {
