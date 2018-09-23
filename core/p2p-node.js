@@ -11,10 +11,19 @@
         let corePrepared;
         const corePromise = new Promise((resolve) => { corePrepared = resolve });
         let defaultOptions = {
-            maxPeers: 1,
+            maxPeers: 3,
 
-            agreeBecomePeer: function() {
-                return ((this.maxPeers > 0) && (pemu.peers.length < this.maxPeers));
+            /**
+             * Node agree or disagree to become a peer
+             * 1. has maxPeers
+             * 2. peers count less than maxPeers
+             * 3. have not become a peer
+             * @param {string} nodeId node id for asker
+             * @return {boolean} true: agree, false: disagree
+             */
+            agreeBecomePeer: function(nodeId) {
+                // if maxPeers not set in node code, pemu.maxPeers = undefined, so it must use this.maxPeers in there
+                return ((this.maxPeers > 0) && (pemu.peers.length < this.maxPeers) && (pemu.peers.indexOf(nodeId) === -1));
             }
         }
         let config = {};
@@ -41,8 +50,15 @@
                 console.log(e);
             }
         })
+        .on('__p2p-node-disconnect', (e, nodeId) => {
+            // clean peers cache
+            let idx = pemu.peers.indexOf(nodeId);
+            if (idx !== -1) {
+                pemu.peers.splice(idx, 1);
+            }
+        })
         .on('__p2p-node-find-peer', (e, nodeId) => {
-            let agree = Object.callMethod(config, 'agreeBecomePeer');
+            let agree = Object.callMethod(config, 'agreeBecomePeer', nodeId);
             if (agree === true) {
                 pemu.peers.push(nodeId);
                 e.respondWith(pemu.uniqueId);
@@ -76,9 +92,16 @@
             },
             findPeer: async () => {
                 const promises = [];
+                let peerCnt = 0;
                 for (let nodeId of pemu.wiredNeighbors) {
+                    // find peers less than pemu.maxPeers
+                    if ((pemu.maxPeers > 0) && (peerCnt >= pemu.maxPeers)) {
+                        break;
+                    }
+
                     let promise = pemu.deliver(nodeId, '__p2p-node-find-peer', pemu.uniqueId);
                     promises.push(promise);
+                    peerCnt++;
                 }
 
                 let results = await tiiny.PromiseWaitAll(promises);
@@ -90,7 +113,7 @@
                 });
             },
             disconnect: async () => {
-                pemu.send(centralId, '__p2p-node-disconnect', pemu.uniqueId);
+                pemu.emit('__p2p-node-disconnect', pemu.uniqueId);
             }
         };
 

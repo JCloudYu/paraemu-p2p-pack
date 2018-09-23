@@ -28,7 +28,7 @@
             }
 
             for (let nodeId of nodeIds) {
-                pemu.send(pemu.uniqueId, '__p2p-node-disconnect', nodeId);
+                pemu.emit('__p2p-node-disconnect', nodeId);
             }
         })
         .on('__p2p-node-connect', async (e) => {

@@ -8,14 +8,14 @@
 
     /**
      * Node agree or disagree to become a peer (Optional)
+     * 1. has maxPeers
+     * 2. peers count less than maxPeers
+     * 3. have not become a peer
+     * @param {string} nodeId node id for asker
      * @return {boolean} true: agree, false: disagree
      */
-    pemu.agreeBecomePeer = () => {
-        if ((pemu.maxPeers > 0) && (pemu.peers.length < pemu.maxPeers)) {
-            return true;
-        }
-
-        return false;
+    pemu.agreeBecomePeer = (nodeId) => {
+        return ((pemu.maxPeers > 0) && (pemu.peers.length < pemu.maxPeers) && (pemu.peers.indexOf(nodeId) === -1));
     };
 
     await pemu.init(() => {
