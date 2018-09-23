@@ -120,7 +120,13 @@
         return nodeIds;
     };
 
-    await pemu.init(callback1);         // init central
+    /**
+     * Do something before init function call promise resolve
+     */
+    let function1 = () => {
+        ...
+    };
+    await pemu.init(function1);         // init central
     ```
 
     (2) Node Example:
@@ -140,16 +146,25 @@
         ...
     };
 
-    await pemu.init(callback2);         // init node
-    console.log(pemu.wiredNeighbors);   // list of wired neighbors
+    /**
+     * Do something before init function call promise resolve
+     */
+    let function2 = () => {
+        ...
+    };
+    await pemu.init(function2);         // init node
 
-    await pemu.fetchNeighbors();        // fetch the newest wired neighbors
-    console.log(pemu.wiredNeighbors);   // list of wired neighbors
+    // paraemu p2p default event
+    pemu.on('p2p-update-neighbors', callback);  // node can update wired neighbors
 
-    await pemu.findPeer();              // find peers by wired neighbors
-    console.log(pemu.peers);            // list of peers
-
+    // paraemu p2p method
+    await pemu.fetchNeighbors();        // fetch the newest wired neighbors and save to cache
+    await pemu.findPeer();              // find peers by wired neighbors and save to cache
     await pemu.disconnect();            // disconnect
+
+    // paraemu p2p property
+    console.log(pemu.wiredNeighbors);   // list of wired neighbors in cache
+    console.log(pemu.peers);            // list of peers in cache
     ```
 
 4. Run command line:

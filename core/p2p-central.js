@@ -38,6 +38,10 @@
             // get neighbors and response
             let neighbors = await Object.callMethod(pemu, 'nodeConnect', e.sender);
             e.respondWith(neighbors);
+
+            for (let nodeId of neighbors) {
+                pemu.send(nodeId, 'p2p-update-neighbors');
+            }
         })
         .on('__p2p-node-disconnect', (e, ...args) => {
             Object.callMethod(pemu, 'nodeDisconnect', ...args);
