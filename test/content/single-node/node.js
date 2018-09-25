@@ -36,9 +36,19 @@
         printDetail();
     });
 
-    pemu.on('p2p-update-neighbors', async(e) => {
-        // node fetch new neighbors
+    pemu
+    .on('p2p-update-neighbors', async(e) => {
+        // old node fetch new neighbors
         await pemu.fetchNeighbors();
-        printDetail();
+        await printDetail();
+
+        pemu.peers.forEach(async (peer) => {
+            let response = await pemu.deliver(peer, 'say-hello', 'Hi');
+            console.log(response);
+        });
+    })
+    .on('say-hello', (e, msg) => {
+        e.respondWith(`* [Single-Node] ${pemu.uniqueId} respond to ${e.sender}`);
+        console.log(`* [Single-Node] ${e.sender} send ${msg} to ${pemu.uniqueId}`);
     });
 })();
