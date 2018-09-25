@@ -96,7 +96,7 @@
                     return corePromise;
                 }
 
-                return tiiny.PromiseWaitAll([Promise.resolve(cb()), corePromise]);
+                return Promise.all([Promise.resolve(cb()), corePromise]);
             },
             fetchNeighbors: async () => {
                 try {

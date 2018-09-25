@@ -2,7 +2,6 @@
     'use strict';
 
     require('../lib/customize');
-    const tiiny = require('tiinytiny');
 
     module.exports = (pemu) => {
 
@@ -60,7 +59,7 @@
                     return corePromise;
                 }
     
-                return tiiny.PromiseWaitAll([Promise.resolve(cb()), corePromise]);
+                return Promise.all([Promise.resolve(cb()), corePromise]);
             }
         };
 
