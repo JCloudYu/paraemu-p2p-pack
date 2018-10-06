@@ -14,9 +14,9 @@
         "test-single-node-inspect": "paraemu --inspect-brk=1234 ./test/inspect/config-single-node.json"
     },
     "author": "JCloudYu",
-	"contributors":[
-		"BRChen <eric790620@gmail.com> (https://github.com/brchen777/)"
-	],
+    "contributors": [
+        "BRChen <eric790620@gmail.com> (https://github.com/brchen777/)"
+    ],
     "license": "ISC",
     "dependencies": {
         "tiinytiny": "^0.2.7"

@@ -75,7 +75,7 @@
     ```javascript
     // ./test/content/central/central.js
     const pemu = require('paraemu');
-    require('paraemu-p2p-pack').expand('central', pemu);
+    require('paraemu-p2p-pack').expand(pemu, 'central');
 
     /**
      * Node connect logic
@@ -126,14 +126,14 @@
     let function1 = () => {
         ...
     };
-    await pemu.init(function1);         // init central
+    await pemu.initP2PEnv(function1);         // init central
     ```
 
     (2) Node Example:
     ```javascript
     // ./test/content/single-node/node.js
     const pemu = require('paraemu');
-    require('paraemu-p2p-pack').expand('node', pemu);
+    require('paraemu-p2p-pack').expand(pemu);
 
     pemu.maxPeers = 5;                  // set maximum peers
 
@@ -152,7 +152,7 @@
     let function2 = () => {
         ...
     };
-    await pemu.init(function2);         // init node
+    await pemu.initP2PEnv(function2);         // init node
 
     // paraemu p2p default event
     pemu.on('p2p-update-neighbors', callback);  // old node can update wired neighbors
