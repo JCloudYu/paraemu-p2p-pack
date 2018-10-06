@@ -2,9 +2,9 @@
     'use strict';
 
     const pemu = require('paraemu');
-    require('../../../index').expand('node', pemu);
+    require('../../../index').expand(pemu);
     
     pemu.maxPeers = 5;
-    await pemu.init();
+    await pemu.initP2PEnv();
     console.log(`* [Multi-Node] Node init: ${pemu.uniqueId}`);
 })();

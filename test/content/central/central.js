@@ -2,7 +2,7 @@
     'use strict';
 
     const pemu = require('paraemu');
-    require('../../../index').expand('central', pemu);
+    require('../../../index').expand(pemu, 'central');
     const { MongoClient } = require('mongodb');
 
     /**

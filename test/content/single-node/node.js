@@ -2,7 +2,7 @@
     'use strict';
 
     const pemu = require('paraemu');
-    require('../../../index').expand('node', pemu);
+    require('../../../index').expand(pemu, 'node');
     
     pemu.maxPeers = 5;
 
@@ -29,7 +29,7 @@
         console.log(pemu.peers);
     };
 
-    await pemu.init(() => {
+    await pemu.initP2PEnv(() => {
         console.log(`* [Single-Node] Node init: ${pemu.uniqueId}`);
     })
     .then(() => {

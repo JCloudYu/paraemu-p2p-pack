@@ -1,138 +1,153 @@
-(() => {
-    'use strict';
-
-    require('../lib/customize');
-    const tiiny = require('tiinytiny');
-
-    module.exports = (pemu) => {
-
-        let isInit = false;
-        let centralId = null;
-        let corePrepared;
-        const corePromise = new Promise((resolve) => { corePrepared = resolve });
-
-        let defaultOptions = {
-            maxPeers: 3,
-
-            /**
-             * Node agree or disagree to become a peer
-             * 1. has maxPeers
-             * 2. peers count less than maxPeers
-             * 3. have not become a peer
-             * @param {string} nodeId node id for asker
-             * @return {boolean} true: agree, false: disagree
-             */
-            agreeBecomePeer: function(nodeId) {
-                // if maxPeers not set in node code, pemu.maxPeers = undefined, so it must use this.maxPeers in there
-                return ((this.maxPeers > 0) && (pemu.peers.length < this.maxPeers) && (pemu.peers.indexOf(nodeId) === -1));
-            }
-        }
-        let config = {};
-
-        let __wiredNeighbors = [];
-        let __peers = [];
-
-        pemu
-        .on('tasks-ready', () => {
-            if (isInit) return;
-
-            config = Object.assign(config, defaultOptions, pemu);
-            isInit = true;
-        })
-        .on('__p2p-central-identification', async (e) => {
-            if (centralId) return;
-
-            centralId = e.sender;
-            try {
-                pemu.wiredNeighbors = await pemu.deliver(centralId, '__p2p-node-connect');
-                corePrepared();
-            }
-            catch (e) {
-                console.log(e);
-            }
-        })
-        .on('__p2p-node-disconnect', (e, nodeId) => {
-            // update neighbors and peers cache
-            let neighborIdx = pemu.wiredNeighbors.indexOf(nodeId);
-            if (neighborIdx !== -1) {
-                pemu.wiredNeighbors.splice(neighborIdx, 1);
-            }
-
-            let peerIdx = pemu.peers.indexOf(nodeId);
-            if (peerIdx !== -1) {
-                pemu.peers.splice(peerIdx, 1);
-            }
-        })
-        .on('__p2p-node-find-peer', (e, nodeId) => {
-            if (!e.respondWith) return;
-
-            let agree = Object.callMethod(config, 'agreeBecomePeer', nodeId);
-            if (agree === true) {
-                pemu.peers.push(nodeId);
-                e.respondWith(pemu.uniqueId);
-                return;
-            }
-
-            e.respondWith(null);
-        });
-
-        let module = {
-            get wiredNeighbors() {
-                return __wiredNeighbors;
-            },
-            set wiredNeighbors(value) {
-                __wiredNeighbors = value;
-            },
-
-            get peers() {
-                return __peers;
-            },
-            set peers(value) {
-                __peers = value;
-            },
-
-            init: (cb) => {
-                if (typeof cb !== 'function') {
-                    return corePromise;
-                }
-
-                return Promise.all([Promise.resolve(cb()), corePromise]);
-            },
-            fetchNeighbors: async () => {
-                try {
-                    pemu.wiredNeighbors = await pemu.deliver(centralId, '__p2p-fetch-neighbors');
-                }
-                catch (e) {
-                    console.log(e);
-                }
-            },
-            findPeer: async () => {
-                const promises = [];
-                let peerCnt = 0;
-                for (let nodeId of pemu.wiredNeighbors) {
-                    // find peers less than pemu.maxPeers
-                    if ((pemu.maxPeers > 0) && (peerCnt >= pemu.maxPeers)) {
-                        break;
-                    }
-
-                    let promise = pemu.deliver(nodeId, '__p2p-node-find-peer', pemu.uniqueId);
-                    promises.push(promise);
-                    peerCnt++;
-                }
-
-                let results = await tiiny.PromiseWaitAll(promises);
-                results.forEach((pRes)=>{
-                    let { result: nodeId } = pRes;
-                    if (!nodeId) return;
-
-                    pemu.peers.push(nodeId);
-                });
-            },
-            disconnect: async () => {
-                pemu.emit('__p2p-node-disconnect', pemu.uniqueId);
-            }
-        };
-
-        return module;
-    }
+(()=>{
+	'use strict';
+	
+	const tiiny = require('tiinytiny');
+	
+	module.exports = (pemu)=>{
+		const RUNTIME = {
+			_initialized: false,
+			_centralId: null,
+			_wired_neighbors: [],
+			_peers: [],
+			_max_peers: 10
+		};
+	
+		Object.defineProperties(pemu, {
+			maxPeers:{
+				get:()=>{
+					return RUNTIME._max_peers;
+				},
+				set:(value)=>{
+					if ( typeof value !== "number" || value <= 0 ) {
+						throw new TypeError( "maxPeers only accept integers greater than 0!" );
+					}
+					
+					RUNTIME._max_peers = Math.floor(value);
+				},
+				enumerable:true
+			},
+			wiredNeighbors:{
+				get: ()=>{
+					return RUNTIME._wired_neighbors.slice(0);
+				},
+				enumerable: true
+			},
+			peers: {
+				get:()=>{
+					return RUNTIME._peers.slice(0);
+				},
+				enumerable:true
+			},
+			initP2PEnv:{
+				value:(cb=null)=>{
+					let promises = [FLOW_CONTROL_PROMISE];
+					if( typeof cb === 'function' ){
+						promises.push(Promise.resolve(cb()));
+					}
+					
+					return Promise.all(promises);
+				},
+				enumerable:true
+			},
+			fetchNeighbors: {
+				value:async()=>{
+					try{
+						RUNTIME._wired_neighbors = await pemu.deliver(RUNTIME._centralId, '__p2p-fetch-neighbors');
+					}
+					catch(e){
+						console.log(e);
+					}
+				},
+				enumerable:true
+			},
+			findPeer: {
+				value:async()=>{
+					const promises = [];
+					let peerCnt = 0;
+					for( let nodeId of RUNTIME._wired_neighbors ){
+						// find peers less than pemu.maxPeers
+						if( peerCnt >= RUNTIME._max_peers ){ break; }
+						
+						let promise = pemu.deliver(nodeId, '__p2p-node-find-peer', pemu.uniqueId);
+						promises.push(promise);
+						peerCnt++;
+					}
+					
+					let results = await tiiny.PromiseWaitAll(promises);
+					results.forEach((pRes)=>{
+						let {result: nodeId} = pRes;
+						if( !nodeId ) return;
+						
+						RUNTIME._peers.push(nodeId);
+					});
+				},
+				enumerable:true
+			},
+			disconnect: {
+				value:async()=>{
+					pemu.emit('__p2p-node-disconnect', pemu.uniqueId);
+				},
+				enumerable:true
+			}
+		});
+		pemu.canAddPeer = ___CAN_ADD_PEER_WITH_ID;
+		
+		
+		
+		let FLOW_CONTROL_TRIGGER;
+		const FLOW_CONTROL_PROMISE = new Promise((resolve)=>{FLOW_CONTROL_TRIGGER=resolve});
+		
+		
+		
+		pemu
+		.on('tasks-ready', ()=>{
+			if ( RUNTIME._initialized ) return;
+			RUNTIME._initialized = true;
+		})
+		.on('__p2p-central-identification', async (e)=>{
+			if ( RUNTIME._centralId ) return;
+			
+			RUNTIME._centralId = e.sender;
+			try {
+				RUNTIME._wired_neighbors = await pemu.deliver(RUNTIME._centralId, '__p2p-node-connect');
+				FLOW_CONTROL_TRIGGER();
+			}
+			catch(e){
+				console.log(e);
+			}
+		})
+		.on('__p2p-node-disconnect', (e, nodeId)=>{
+			// update neighbors and peers cache
+			let neighborIdx = RUNTIME._wired_neighbors.indexOf(nodeId);
+			if( neighborIdx >= 0 ){
+				RUNTIME._wired_neighbors.splice(neighborIdx, 1);
+			}
+			
+			let peerIdx = RUNTIME._peers.indexOf(nodeId);
+			if( peerIdx >= 0 ){
+				RUNTIME._peers.splice(peerIdx, 1);
+			}
+		})
+		.on('__p2p-node-find-peer', (e, nodeId)=>{
+			if ( !e.respondWith || typeof this.canAddPeer !== "function" ) return;
+			
+			let responseData = null;
+			if ( this.canAddPeer(nodeId) === true ) {
+				RUNTIME._peers.push(nodeId);
+				responseData = pemu.uniqueId;
+			}
+			
+			e.respondWith(responseData);
+		});
+		
+		function ___CAN_ADD_PEER_WITH_ID(nodeId) {
+			if ( RUNTIME._peers.length >= RUNTIME._max_peers ) {
+				return false;
+			}
+			
+			if ( RUNTIME._peers.indexOf(nodeId) >= 0 ) {
+				return false;
+			}
+		}
+	};
 })();
