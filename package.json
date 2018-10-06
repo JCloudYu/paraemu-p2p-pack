@@ -17,7 +17,7 @@
 	"contributors":[
 		"BRChen <eric790620@gmail.com> (https://github.com/brchen777/)"
 	],
-    "license": "WTFPL",
+    "license": "ISC",
     "dependencies": {
         "tiinytiny": "^0.2.7"
     },
