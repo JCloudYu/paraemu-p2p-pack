@@ -13,8 +13,11 @@
         "test-multi-node-inspect": "paraemu --inspect-brk=1234 ./test/inspect/config-multi-node.json",
         "test-single-node-inspect": "paraemu --inspect-brk=1234 ./test/inspect/config-single-node.json"
     },
-    "author": "",
-    "license": "ISC",
+    "author": "JCloudYu",
+	"contributors":[
+		"BRChen <eric790620@gmail.com> (https://github.com/brchen777/)"
+	],
+    "license": "WTFPL",
     "dependencies": {
         "tiinytiny": "^0.2.7"
     },
