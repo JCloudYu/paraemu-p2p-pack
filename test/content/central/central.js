@@ -136,7 +136,7 @@
     const colName = 'node';
 
     let collection = null;
-    await pemu.init(() => {
+    await pemu.initP2PEnv(() => {
         return new Promise(async (resolve) => {
             // init mongodb
             const connect = await MongoClient.connect(dbUrl, { useNewUrlParser: true });

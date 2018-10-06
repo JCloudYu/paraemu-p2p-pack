@@ -54,7 +54,7 @@
         });
 
         let module = {
-            init: (cb) => {
+            initP2PEnv: (cb) => {
                 if (typeof cb !== 'function') {
                     return corePromise;
                 }
