@@ -75,7 +75,6 @@
     ```javascript
     // ./test/content/central/central.js
     const pemu = require('paraemu');
-    require('paraemu-p2p-pack').expand(pemu, 'central');
 
     /**
      * Node connect logic
@@ -120,6 +119,9 @@
         return nodeIds;
     };
 
+    // expand p2p pack
+    require('paraemu-p2p-pack').expand(pemu, 'central');
+
     /**
      * Do something before init function call promise resolve
      */
@@ -133,7 +135,6 @@
     ```javascript
     // ./test/content/single-node/node.js
     const pemu = require('paraemu');
-    require('paraemu-p2p-pack').expand(pemu);
 
     pemu.maxPeers = 5;                  // set maximum peers
 
@@ -145,6 +146,9 @@
     pemu.canAddPeer = (nodeId) => {
         ...
     };
+
+    // expand p2p pack
+    require('paraemu-p2p-pack').expand(pemu);
 
     /**
      * Do something before init function call promise resolve

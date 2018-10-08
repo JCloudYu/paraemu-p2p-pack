@@ -2,8 +2,6 @@
     'use strict';
 
     const pemu = require('paraemu');
-    require('../../../index').expand(pemu, 'central');
-    const { MongoClient } = require('mongodb');
 
     /**
      * Node connect logic
@@ -131,6 +129,9 @@
         return nodeIds;
     };
 
+    require('../../../index').expand(pemu, 'central');
+
+    const { MongoClient } = require('mongodb');
     const dbUrl = 'mongodb://127.0.0.1:27017/';
     const dbName = 'p2p-central';
     const colName = 'node';
