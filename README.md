@@ -142,7 +142,7 @@
      * @param {string} nodeId node id for asker
      * @return {boolean} true: agree, false: disagree
      */
-    pemu.agreeBecomePeer = (nodeId) => {
+    pemu.canAddPeer = (nodeId) => {
         ...
     };
 

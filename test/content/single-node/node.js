@@ -14,7 +14,7 @@
      * @param {string} nodeId node id for asker
      * @return {boolean} true: agree, false: disagree
      */
-    pemu.agreeBecomePeer = (nodeId) => {
+    pemu.canAddPeer = (nodeId) => {
         return ((pemu.maxPeers > 0) && (pemu.peers.length < pemu.maxPeers) && (pemu.peers.indexOf(nodeId) === -1));
     };
 
