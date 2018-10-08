@@ -129,10 +129,10 @@
 			}
 		})
 		.on('__p2p-node-find-peer', (e, nodeId)=>{
-			if ( !e.respondWith || typeof this.canAddPeer !== "function" ) return;
+			if ( !e.respondWith || typeof pemu.canAddPeer !== "function" ) return;
 			
 			let responseData = null;
-			if ( this.canAddPeer(nodeId) === true ) {
+			if ( pemu.canAddPeer(nodeId) === true ) {
 				RUNTIME._peers.push(nodeId);
 				responseData = pemu.uniqueId;
 			}
@@ -148,6 +148,8 @@
 			if ( RUNTIME._peers.indexOf(nodeId) >= 0 ) {
 				return false;
 			}
+
+			return true;
 		}
 	};
 })();
