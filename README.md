@@ -148,7 +148,7 @@
     };
 
     // expand p2p pack
-    require('paraemu-p2p-pack').expand(pemu);
+    require('paraemu-p2p-pack').expand(pemu, 'node');
 
     /**
      * Do something before init function call promise resolve
@@ -228,17 +228,3 @@
 
 * Run test-single-node (use npm):
     > npm run test-single-node
-
-### Debug ###
-
-* Run test-all (use npm):
-    > npm run test-all-inspect
-
-* Run test-central (use npm):
-    > npm run test-central-inspect
-
-* Run test-multi-node (use npm):
-    > npm run test-multi-node-inspect
-
-* Run test-single-node (use npm):
-    > npm run test-single-node-inspect
