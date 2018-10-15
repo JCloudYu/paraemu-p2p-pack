@@ -7,11 +7,7 @@
         "test-all": "paraemu ./test/config-all.json",
         "test-central": "paraemu ./test/config-central.json",
         "test-multi-node": "paraemu ./test/config-multi-node.json",
-        "test-single-node": "paraemu ./test/config-single-node.json",
-        "test-all-inspect": "paraemu --inspect-brk=1234 ./test/inspect/config-all.json",
-        "test-central-inspect": "paraemu --inspect-brk=1234 ./test/inspect/config-central.json",
-        "test-multi-node-inspect": "paraemu --inspect-brk=1234 ./test/inspect/config-multi-node.json",
-        "test-single-node-inspect": "paraemu --inspect-brk=1234 ./test/inspect/config-single-node.json"
+        "test-single-node": "paraemu ./test/config-single-node.json"
     },
     "author": "JCloudYu",
     "contributors": [
