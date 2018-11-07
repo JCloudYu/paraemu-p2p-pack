@@ -136,8 +136,6 @@
     // ./test/content/single-node/node.js
     const pemu = require('paraemu');
 
-    pemu.maxPeers = 5;                  // set maximum peers
-
     /**
      * Node agree or disagree to become a peer (Optional)
      * @param {string} nodeId node id for asker
@@ -150,13 +148,16 @@
     // expand p2p pack
     require('paraemu-p2p-pack').expand(pemu, 'node');
 
+    // set maximum peers (after require p2p-pack)
+    pemu.maxPeers = 5;
+
     /**
      * Do something before init function call promise resolve
      */
     let function2 = () => {
         ...
     };
-    await pemu.initP2PEnv(function2);         // init node
+    await pemu.initP2PEnv(function2);   // init node
 
     // paraemu p2p default event
     pemu.on('p2p-update-neighbors', callback);  // old node can update wired neighbors

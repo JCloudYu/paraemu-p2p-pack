@@ -2,8 +2,6 @@
     'use strict';
 
     const pemu = require('paraemu');
-    
-    pemu.maxPeers = 5;
 
     /**
      * Node agree or disagree to become a peer (Optional)
@@ -18,6 +16,7 @@
     };
 
     require('../../../index').expand(pemu, 'node');
+    pemu.maxPeers = 5;
 
     let printDetail = async () => {
         if (!pemu.wiredNeighbors || pemu.wiredNeighbors.length === 0) return;

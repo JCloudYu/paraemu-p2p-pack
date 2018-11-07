@@ -18,8 +18,8 @@
                     return RUNTIME._max_peers;
                 },
                 set: (value) => {
-                    if ( typeof value !== "number" || value <= 0 ) {
-                        throw new TypeError( "maxPeers only accept integers greater than 0!" );
+                    if (typeof value !== 'number' || value <= 0) {
+                        throw new TypeError('maxPeers only accept integers greater than 0!');
                     }
                     
                     RUNTIME._max_peers = Math.floor(value);
@@ -147,7 +147,7 @@
             if ( RUNTIME._peers.length >= RUNTIME._max_peers ) {
                 return false;
             }
-            
+
             if ( RUNTIME._peers.indexOf(nodeId) >= 0 ) {
                 return false;
             }
