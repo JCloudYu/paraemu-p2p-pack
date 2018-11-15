@@ -145,7 +145,7 @@
 				let {_id, nodeId} = data;
 				neighborOIds.push(_id);
 				neighborIds.push(nodeId);
-				pemu.send(nodeId, '__p2p-update-neighbors', [sourceId], [], 145);
+				pemu.send(nodeId, '__p2p-update-neighbors', [sourceId], []);
 			});
 			
 			if ( neighborOIds.length > 0 ) {
@@ -158,7 +158,7 @@
 					{$addToSet: {neighbors: insertedId}}
 				);
 				
-				pemu.send( sourceId, '__p2p-update-neighbors', neighborIds, [], 158);
+				pemu.send( sourceId, '__p2p-update-neighbors', neighborIds, []);
 			}
 		}
 		
