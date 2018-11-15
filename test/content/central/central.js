@@ -132,29 +132,36 @@
 	async function ___ASSIGN_NEIGHBORS() {
 		for( let {nodeId:sourceId, insertedId} of novice_queue ) {
 			// get N random neighbors
-			let randomMax = await collection.countDocuments();
-			let randomN = ((Math.random() * randomMax)|0)+1;
 			let neighborOIds = [];
 			let neighborIds = [];
-			await collection.aggregate( [{$sample: {size: randomN}}] )
+			await collection.aggregate([
+				{$match:{$and:[
+					{_id:{$not:{$eq:insertedId}}},
+					{neighbors:{$not:{$elemMatch:{$eq:insertedId}}}}
+				]}},
+				{$sample: {size: (((Math.random()*10)|0)+1)}}
+			])
 			.forEach((data)=>{
 				let {_id, nodeId} = data;
 				neighborOIds.push(_id);
 				neighborIds.push(nodeId);
-				pemu.send(nodeId, '__p2p-update-neighbors', [sourceId], []);
+				pemu.send(nodeId, '__p2p-update-neighbors', [sourceId], [], 145);
 			});
 			
-			await collection.updateOne({_id:{insertedId}}, {$addToSet:{neighbors:{$each:neighborOIds}}});
+			if ( neighborOIds.length > 0 ) {
+				await collection.updateOne({_id:insertedId}, {$addToSet:{neighbors:{$each:neighborOIds}}});
 			
-			// update neighbors in old nodes
-			await collection
-			.updateMany(
-				{_id: {$in: neighborOIds}},
-				{$addToSet: {neighbors: insertedId}}
-			);
-			
-			pemu.send( sourceId, '__p2p-update-neighbors', neighborIds, [] );
+				// update neighbors in old nodes
+				await collection
+				.updateMany(
+					{_id: {$in: neighborOIds}},
+					{$addToSet: {neighbors: insertedId}}
+				);
+				
+				pemu.send( sourceId, '__p2p-update-neighbors', neighborIds, [], 158);
+			}
 		}
+		
 		novice_queue.splice(0);
 		neighbor_timeout = setTimeout(___ASSIGN_NEIGHBORS, 5000);
 	}
