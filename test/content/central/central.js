@@ -129,6 +129,10 @@
 	
 	
 	let neighbor_timeout = setTimeout(___ASSIGN_NEIGHBORS, 5000);
+	let dynamic_timeout = setTimeout( ___CHANGE_NEIGHBORS, 10000 );
+
+
+
 	async function ___ASSIGN_NEIGHBORS() {
 		for( let {nodeId:sourceId, insertedId} of novice_queue ) {
 			// get N random neighbors
@@ -164,5 +168,47 @@
 		
 		novice_queue.splice(0);
 		neighbor_timeout = setTimeout(___ASSIGN_NEIGHBORS, 5000);
+	}
+
+	async function ___CHANGE_NEIGHBORS() {
+		const totalNodes = await collection.countDocuments();
+		let nodeOIds = [];
+
+		await collection.aggregate(
+			[ { $sample: {size: (totalNodes / 3) | 0} } ]
+		)
+		.forEach(async(data)=>{
+			const {_id, neighbors} = data;
+			nodeOIds.push( _id );
+
+			if( Math.random() > 0.05 ) return;
+
+
+			const newNeighborId = nodeOIds[ Math.floor( Math.random()*nodeOIds.length ) ];
+			// INFO: Remove a neighbor
+			if( (newNeighborId === _id) || neighbors.includes( newNeighborId ) ) {
+				const oldNeighborId = neighbors[ Math.floor( Math.random()*neighbors.length ) ];
+				if( !oldNeighborId ) return;
+
+				await collection
+				.updateOne(
+					{_id: _id},
+					{$pull: {neighbors: oldNeighborId}}
+				);
+				return;
+			}
+
+
+			// INFO: Add a neighbor
+			await collection
+			.updateOne(
+				{_id: _id},
+				{$addToSet: {neighbors: newNeighborId}}
+			);
+		});
+
+
+
+		dynamic_timeout = setTimeout(___CHANGE_NEIGHBORS, 10000);
 	}
 })();
