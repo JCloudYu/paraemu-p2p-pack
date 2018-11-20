@@ -1,11 +1,16 @@
 (async ()=>{
 	'use strict';
-	
+
+	const {ExtTimer} = require( 'jsboost' );
 	const pemu = require('paraemu');
 	const {MongoClient} = require('mongodb');
 	const dbUrl = 'mongodb://127.0.0.1:27017/';
 	const dbName = 'p2p-central';
 	const colName = 'node';
+
+	const NodeInitTimer		= ExtTimer.SingletonInterval();
+	const NodeUpdateTimer	= ExtTimer.SingletonInterval();
+
 	let collection = null;
 	let novice_queue = [];
 	
@@ -24,7 +29,7 @@
 			groupId, taskId, jobId, nodeId, neighbors:[],
 			time: Math.round(Date.now() / 1000)
 		});
-		
+
 		novice_queue.push({insertedId, nodeId});
 		console.log(`* [Central] Node connect: ${nodeId}`);
 	};
@@ -128,8 +133,8 @@
 	
 	
 	
-	let neighbor_timeout = setTimeout(___ASSIGN_NEIGHBORS, 5000);
-	let dynamic_timeout = setTimeout( ___CHANGE_NEIGHBORS, 500 );
+	NodeInitTimer(___ASSIGN_NEIGHBORS, 5000);
+	NodeUpdateTimer(___CHANGE_NEIGHBORS, 500);
 
 
 
@@ -167,20 +172,22 @@
 		}
 		
 		novice_queue.splice(0);
-		neighbor_timeout = setTimeout(___ASSIGN_NEIGHBORS, 5000);
 	}
 	async function ___CHANGE_NEIGHBORS() {
 		if ( Math.random() > 0.05 ) return;
-	
-		
-		let [{_id, nodeId, neighbors}] = await collection.aggregate([{ $sample:{ size:1 }}]).toArray();
+
+
+		let [node] = await collection.aggregate([{ $sample:{ size:1 }}]).toArray();
+		if( !node ) return;
+
+		let {_id, nodeId, neighbors} = node;
 		let promises = [], diff = [];
 		if ( Math.random() > 0.5 ) {
 			if ( neighbors.length <= 0 ) return;
 			
 			// NOTE: Select neighbor to remove
 			let neighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
-			let [neighborInfo] = await collection.find({_id:neighbors}).toArray();
+			let [neighborInfo] = await collection.find({_id:neighbor}).toArray();
 			if ( !neighborInfo ) return;
 		
 			// NOTE: Update neighbor in db
@@ -193,6 +200,8 @@
 		}
 		else {
 			let [target] = await collection.aggregate([{$match:{_id:{$ne:_id}}}, {$sample:{size:1}}]).toArray();
+			if( !target ) return;
+
 			promises.push(collection.updateOne({_id}, {$addToSet:{neighbors:target._id}}));
 			promises.push(collection.updateOne({_id:target._id}, {$addToSet:{neighbors:_id}}));
 			
@@ -203,10 +212,8 @@
 		
 		
 		await Promise.all(promises);
-		for( let {nodeId:sourceId, add, del} of diff ) {
+		for( let {id:sourceId, add, del} of diff ) {
 			pemu.send( sourceId, '__p2p-update-neighbors', add, del);
 		}
-		
-		dynamic_timeout = setTimeout(___CHANGE_NEIGHBORS, 500);
 	}
 })();
