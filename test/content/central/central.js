@@ -129,7 +129,7 @@
 	
 	
 	let neighbor_timeout = setTimeout(___ASSIGN_NEIGHBORS, 5000);
-	let dynamic_timeout = setTimeout( ___CHANGE_NEIGHBORS, 10000 );
+	let dynamic_timeout = setTimeout( ___CHANGE_NEIGHBORS, 500 );
 
 
 
@@ -169,46 +169,44 @@
 		novice_queue.splice(0);
 		neighbor_timeout = setTimeout(___ASSIGN_NEIGHBORS, 5000);
 	}
-
 	async function ___CHANGE_NEIGHBORS() {
-		const totalNodes = await collection.countDocuments();
-		let nodeOIds = [];
-
-		await collection.aggregate(
-			[ { $sample: {size: (totalNodes / 3) | 0} } ]
-		)
-		.forEach(async(data)=>{
-			const {_id, neighbors} = data;
-			nodeOIds.push( _id );
-
-			if( Math.random() > 0.05 ) return;
-
-
-			const newNeighborId = nodeOIds[ Math.floor( Math.random()*nodeOIds.length ) ];
-			// INFO: Remove a neighbor
-			if( (newNeighborId === _id) || neighbors.includes( newNeighborId ) ) {
-				const oldNeighborId = neighbors[ Math.floor( Math.random()*neighbors.length ) ];
-				if( !oldNeighborId ) return;
-
-				await collection
-				.updateOne(
-					{_id: _id},
-					{$pull: {neighbors: oldNeighborId}}
-				);
-				return;
-			}
-
-
-			// INFO: Add a neighbor
-			await collection
-			.updateOne(
-				{_id: _id},
-				{$addToSet: {neighbors: newNeighborId}}
-			);
-		});
-
-
-
-		dynamic_timeout = setTimeout(___CHANGE_NEIGHBORS, 10000);
+		if ( Math.random() > 0.05 ) return;
+	
+		
+		let [{_id, nodeId, neighbors}] = await collection.aggregate([{ $sample:{ size:1 }}]).toArray();
+		let promises = [], diff = [];
+		if ( Math.random() > 0.5 ) {
+			if ( neighbors.length <= 0 ) return;
+			
+			// NOTE: Select neighbor to remove
+			let neighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
+			let [neighborInfo] = await collection.find({_id:neighbors}).toArray();
+			if ( !neighborInfo ) return;
+		
+			// NOTE: Update neighbor in db
+			promises.push(collection.updateOne({_id}, {$pull:{neighbors:neighbor}}));
+			promises.push(collection.updateOne({_id:neighbor}, {$pull:{neighbors:_id}}));
+			
+			// NOTE: Prepare neighbor diff
+			diff.push({id:nodeId, add:[], del:[neighborInfo.nodeId]});
+			diff.push({id:neighborInfo.nodeId, add:[], del:[nodeId]});
+		}
+		else {
+			let [target] = await collection.aggregate([{$match:{_id:{$ne:_id}}}, {$sample:{size:1}}]).toArray();
+			promises.push(collection.updateOne({_id}, {$addToSet:{neighbors:target._id}}));
+			promises.push(collection.updateOne({_id:target._id}, {$addToSet:{neighbors:_id}}));
+			
+			diff.push({id:nodeId, add:[target.nodeId], del:[]});
+			diff.push({id:target.nodeId, add:[nodeId], del:[]});
+		}
+		
+		
+		
+		await Promise.all(promises);
+		for( let {nodeId:sourceId, add, del} of diff ) {
+			pemu.send( sourceId, '__p2p-update-neighbors', add, del);
+		}
+		
+		dynamic_timeout = setTimeout(___CHANGE_NEIGHBORS, 500);
 	}
 })();
