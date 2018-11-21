@@ -174,7 +174,7 @@
 		novice_queue.splice(0);
 	}
 	async function ___CHANGE_NEIGHBORS() {
-		if ( Math.random() > 0.05 ) return;
+		if ( Math.random() > 0.01 ) return;
 
 
 		let [node] = await collection.aggregate([{ $sample:{ size:1 }}]).toArray();
