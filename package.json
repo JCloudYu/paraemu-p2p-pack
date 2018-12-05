@@ -15,7 +15,7 @@
     ],
     "license": "ISC",
     "dependencies": {
-        "jsboost": "^0.2.9",
+        "jsboost": "^0.3.0",
         "tiinytiny": "^0.2.7"
     },
     "devDependencies": {
