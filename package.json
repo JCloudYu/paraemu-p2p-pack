@@ -1,6 +1,6 @@
 {
     "name": "paraemu-p2p-pack",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -15,7 +15,7 @@
     ],
     "license": "ISC",
     "dependencies": {
-        "jsboost": "^0.3.2",
+        "jsboost": "^0.3.4",
         "tiinytiny": "^0.2.7"
     },
     "devDependencies": {
