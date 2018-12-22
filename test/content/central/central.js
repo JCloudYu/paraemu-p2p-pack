@@ -1,5 +1,13 @@
 (async ()=>{
 	'use strict';
+	
+	try {
+		require( 'jsboost' );
+		require( 'mongodb' );
+	}catch(e) {
+		throw new Error( "jsboost@0.3 and mongodb modules are required to run this test!" );
+	}
+	
 
 	const {ExtTimer} = require( 'jsboost' );
 	const pemu = require('paraemu');
