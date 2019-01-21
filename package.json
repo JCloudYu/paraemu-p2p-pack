@@ -1,6 +1,6 @@
 {
     "name": "paraemu-p2p-pack",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -14,6 +14,10 @@
         "BRChen <eric790620@gmail.com> (https://github.com/brchen777/)"
     ],
     "license": "ISC",
-    "dependencies": {},
-    "devDependencies": {}
+    "dependencies": {
+        "jsboost": "^0.9.5"
+    },
+    "devDependencies": {
+        "mongodb": "^3.1.12"
+    }
 }

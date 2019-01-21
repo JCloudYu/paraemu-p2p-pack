@@ -109,13 +109,23 @@
             if ( RUNTIME._centralId ) return;
             
             RUNTIME._centralId = e.sender;
-            try {
-                RUNTIME._wired_neighbors = await pemu.deliver(RUNTIME._centralId, '__p2p-node-connect');
-                FLOW_CONTROL_TRIGGER();
-            }
-            catch(e){
-                console.log(e);
-            }
+            pemu.send(RUNTIME._centralId, '__p2p-node-connect');
+            FLOW_CONTROL_TRIGGER();
+        })
+        .on('__p2p-update-neighbors', (e, insertedNodeIds, deletedNodeIds) => {
+            RUNTIME._wired_neighbors.push(...insertedNodeIds);
+
+            deletedNodeIds.forEach((nodeId) => {
+                let neighborIdx = RUNTIME._wired_neighbors.indexOf(nodeId);
+                if (neighborIdx >= 0){
+                    RUNTIME._wired_neighbors.splice(neighborIdx, 1);
+                }
+
+                let peerIdx = RUNTIME._peers.indexOf(nodeId);
+                if (peerIdx >= 0){
+                    RUNTIME._peers.splice(peerIdx, 1);
+                }
+            });
         })
         .on('__p2p-node-disconnect', (e, nodeId)=>{
             // update neighbors and peers cache
@@ -154,38 +164,38 @@
         }
     };
     
-    function PromiseWaitAll(promise_queue=[]) {
-		if ( !Array.isArray(promise_queue) ){
-			promise_queue = [promise_queue];
-		}
-		
-		if( promise_queue.length === 0 ){
-			return Promise.resolve([]);
-		}
-		
-		return new Promise((resolve, reject) =>{
-			let result_queue=[], ready_count=0, resolved = true;
-			for(let idx=0; idx<promise_queue.length; idx++) {
-				let item = {resolved:true, seq:idx, result:null};
-				
-				result_queue.push(item);
-				Promise.resolve(promise_queue[idx]).then(
-					(result)=>{
-						resolved = (item.resolved = true) && resolved;
-						item.result = result;
-					},
-					(error)=>{
-						resolved = (item.resolved = false) && resolved;
-						item.result = error;
-					}
-				).then(()=>{
-					ready_count++;
-					
-					if ( promise_queue.length === ready_count ) {
-						(resolved?resolve:reject)(result_queue);
-					}
-				});
-			}
-		});
-	};
+    function PromiseWaitAll(promise_queue = []) {
+        if (!Array.isArray(promise_queue)) {
+            promise_queue = [promise_queue];
+        }
+        
+        if (promise_queue.length === 0) {
+            return Promise.resolve([]);
+        }
+        
+        return new Promise((resolve, reject) => {
+            let result_queue=[], ready_count=0, resolved = true;
+            for(let idx=0; idx<promise_queue.length; idx++) {
+                let item = {resolved:true, seq:idx, result:null};
+                
+                result_queue.push(item);
+                Promise.resolve(promise_queue[idx]).then(
+                    (result) => {
+                        resolved = (item.resolved = true) && resolved;
+                        item.result = result;
+                    },
+                    (error) => {
+                        resolved = (item.resolved = false) && resolved;
+                        item.result = error;
+                    }
+                ).then(() => {
+                    ready_count++;
+                    
+                    if (promise_queue.length === ready_count) {
+                        (resolved?resolve:reject)(result_queue);
+                    }
+                });
+            }
+        });
+    }
 })();

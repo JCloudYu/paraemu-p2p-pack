@@ -37,14 +37,16 @@
     });
 
     pemu
-    .on('p2p-update-neighbors', async(e) => {
+    .on('__p2p-update-neighbors', async(e) => {
         // old node fetch new neighbors
         await pemu.fetchNeighbors();
         await printDetail();
 
         pemu.peers.forEach(async (peer) => {
             let response = await pemu.deliver(peer, 'say-hello', 'Hi');
-            console.log(response);
+            if (response) {
+                console.log(response);
+            }
         });
     })
     .on('say-hello', (e, msg) => {

@@ -160,7 +160,7 @@
     await pemu.initP2PEnv(function2);   // init node
 
     // paraemu p2p default event
-    pemu.on('p2p-update-neighbors', callback);  // old node can update wired neighbors
+    pemu.on('__p2p-update-neighbors', callback);    // old node can update wired neighbors
 
     // paraemu p2p method
     await pemu.fetchNeighbors();        // fetch the newest wired neighbors and save those to cache
